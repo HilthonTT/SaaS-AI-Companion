@@ -1,13 +1,13 @@
 import { auth, currentUser } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 
-import prismaDb from "@/lib/prismadb";
+import prismadb from "@/lib/prismadb";
 import { stripe } from "@/lib/stripe";
 import { absoluteUrl } from "@/lib/utils";
 
 const settingsUrl = absoluteUrl("/settings");
 
-export async function GET(req: Request) {
+export async function GET() {
   try {
     const { userId } = auth();
     const user = await currentUser();
@@ -16,7 +16,7 @@ export async function GET(req: Request) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const userSubscription = await prismaDb.userSubscription.findUnique({
+    const userSubscription = await prismadb.userSubscription.findUnique({
       where: {
         userId,
       },
@@ -41,7 +41,7 @@ export async function GET(req: Request) {
       line_items: [
         {
           price_data: {
-            currency: "Euro",
+            currency: "eur",
             product_data: {
               name: "Companion Pro",
               description: "Create Custom AI Companions",

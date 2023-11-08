@@ -10,13 +10,20 @@ import { ModeToggle } from "@/components/mode-toggle";
 import { MobileSidebar } from "@/components/mobile-sidebar";
 
 import { UserButton } from "@clerk/nextjs";
+import { useModal } from "@/hooks/use-modal";
 
 const font = Poppins({
   weight: "600",
   subsets: ["latin"],
 });
 
-export const Navbar = () => {
+interface NavbarProps {
+  isPro: boolean;
+}
+
+export const Navbar = ({ isPro }: NavbarProps) => {
+  const { onOpen } = useModal();
+
   return (
     <div className="fixed w-full z-50 flex justify-between items-center py-2 px-4 border-b-primary/10 bg-secondary h-16">
       <div className="flex items-center">
@@ -32,10 +39,12 @@ export const Navbar = () => {
         </Link>
       </div>
       <div className="flex items-center gap-x-3">
-        <Button variant="premium" size="sm">
-          Upgrade
-          <Sparkles className="h-4 w-4 fill-white text-white ml-2" />
-        </Button>
+        {!isPro && (
+          <Button onClick={() => onOpen("pro")} variant="premium" size="sm">
+            Upgrade
+            <Sparkles className="h-4 w-4 fill-white text-white ml-2" />
+          </Button>
+        )}
         <ModeToggle />
         <UserButton afterSignOutUrl="/" />
       </div>
